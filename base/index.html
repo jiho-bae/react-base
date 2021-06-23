@@ -5,31 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script
-      src="https://unpkg.com/react@17/umd/react.development.js"
-      crossorigin
-    ></script>
-    <script
-      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
-      crossorigin
-    ></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
   </head>
   <body>
     <div id="root"></div>
     <script>
       const e = React.createElement;
-      class LikeBtn extends React.Component {
+      class LikeButton extends React.Component {
         constructor(props) {
           super(props);
+          this.state = {
+            liked: false,
+          };
         }
-
         render() {
-          return e("button", null, "LIKE");
+          return e(
+            "button",
+            {
+              onClick: () => {
+                this.setState({ liked: !this.state.liked });
+              },
+              type: "submit",
+            },
+            this.state.liked ? "LIKED" : "LIKE"
+          );
         }
       }
     </script>
     <script>
-      ReactDOM.render(e(LikeBtn), document.querySelector("#root"));
+      ReactDOM.render(e(LikeButton), document.querySelector("#root"));
     </script>
   </body>
 </html>

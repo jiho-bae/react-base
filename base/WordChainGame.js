@@ -1,56 +1,42 @@
 const React = require("react");
-const { Component } = React;
+const { useState } = React;
+const WordChainGame = () => {
+  const [word, setWord] = useState("리액트훅스");
+  const [value, setValue] = useState("");
+  const [result, setResult] = useState("");
 
-class WordChainGame extends Component {
-  state = {
-    word: "김말이",
-    value: "",
-    result: "",
+  const onChange = (e) => {
+    setValue(e.target.value);
   };
 
-  onChange = (e) => {
-    const { value } = e.target;
-    this.setState({ value });
-  };
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    const { value, word } = this.state;
     if (value.length < 2) {
-      this.setState({
-        result: `2글자 이상의 단어를 입력하세요. 입력한 단어 : ${value}`,
-        value: "",
-      });
+      setResult(`2글자 이상 단어를 입력하세요. 입력한 단어 : ${value}`);
+      setValue("");
       return;
     }
     if (word[word.length - 1] === value[0]) {
-      this.setState({
-        result: `정답. 이전 제시어 : ${word}`,
-        word: value,
-        value: "",
-      });
+      setResult(`정답. 이전 제시어 : ${word}`);
+      setWord(value);
+      setValue("");
     } else {
-      this.setState({
-        result: `규칙에 어긋납니다. 입력한 단어 : ${value}`,
-        value: "",
-      });
+      setResult(`규칙에 어긋납니다. 입력한 단어 : ${value}`);
+      setValue("");
     }
   };
 
-  render() {
-    const { word, value, result } = this.state;
-    return (
-      <>
-        <h4>끝말잇기 게임(Webpack)</h4>
-        <p>제시어 : {word}</p>
-        <form onSubmit={this.onSubmit}>
-          <input type="text" value={value} onChange={this.onChange} />
-          <button>정답 확인</button>
-        </form>
-        <div>{result}</div>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <h4>끝말잇기 게임(Webpack)</h4>
+      <p>제시어 : {word}</p>
+      <form onSubmit={onSubmit}>
+        <input type="text" value={value} onChange={onChange} />
+        <button>정답 확인</button>
+      </form>
+      <div>{result}</div>
+    </>
+  );
+};
 
 module.exports = WordChainGame;

@@ -5,7 +5,7 @@ class WordChainGame extends Component {
   state = {};
 
   render() {
-    return;
+    return <div>Hi Webpack</div>;
   }
 }
 

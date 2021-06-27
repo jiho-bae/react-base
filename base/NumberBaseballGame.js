@@ -1,6 +1,5 @@
-const React = require("react");
-const { Component } = React;
-const Try = require("./Try");
+import React, { useState } from "react";
+import Try from "./Try";
 
 function getNumbers() {
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -12,42 +11,33 @@ function getNumbers() {
   return result;
 }
 
-class NumberBaseballGame extends Component {
-  state = {
-    answer: getNumbers(),
-    value: "",
-    tries: [],
-    msg: "",
-  };
+const NumberBaseballGame = () => {
+  const [answer, setAnswer] = useState(getNumbers);
+  const [value, setValue] = useState("");
+  const [tries, setTries] = useState([]);
+  const [msg, setMsg] = useState("");
 
-  onSubmit = (e) => {
-    const { answer, value, tries } = this.state;
+  const onSubmit = (e) => {
     e.preventDefault();
     if (value.length < 4) {
-      this.setState({
-        value: "",
-        msg: "숫자 4개를 입력하세요",
-      });
+      setValue("");
+      setMsg("숫자 4개를 입력하세요");
       return;
     }
     if (value === answer.join("")) {
       alert("✅ 홈런!\n게임 재시작");
-      this.setState({
-        answer: getNumbers(),
-        tries: [],
-        value: "",
-        msg: "",
-      });
+      setAnswer(getNumbers());
+      setTries([]);
+      setValue("");
+      setMsg("");
       return;
     }
     if (tries.length >= 9) {
       alert(`❌ 아웃! 정답: ${answer.join(",")}\n 게임 재시작`);
-      this.setState({
-        answer: getNumbers(),
-        tries: [],
-        value: "",
-        msg: "",
-      });
+      setAnswer(getNumbers());
+      setTries([]);
+      setValue("");
+      setMsg("");
     } else {
       const answerArray = value.split("").map(Number);
       let strike = 0,
@@ -59,40 +49,32 @@ class NumberBaseballGame extends Component {
           ball += 1;
         }
       }
-      this.setState({
-        tries: [...tries, { try: value, result: `맞춘 갯수 : ${strike + ball}개, ${strike} 스트라이크, ${ball} 볼` }],
-        value: "",
-        msg: "다시 시도하세요!",
-      });
+      setTries([...tries, { try: value, result: `맞춘 갯수 : ${strike + ball}개, ${strike} 스트라이크, ${ball} 볼` }]);
+      setValue("");
+      setMsg("다시 시도하세요!");
     }
   };
 
-  onChange = (e) => {
-    this.setState({ value: e.target.value });
-  };
+  const onChange = (e) => setValue(e.target.value);
+  return (
+    <>
+      <h4>숫자야구 게임</h4>
+      <p>숫자 4개를 맞추시오.</p>
+      <span>
+        시도 횟수 : {tries.length}, 남은 횟수 : {10 - tries.length}
+      </span>
+      <form onSubmit={onSubmit}>
+        <input type="text" maxLength={4} value={value} onChange={onChange} />
+        <button>정답 확인</button>
+      </form>
+      <div>{msg}</div>
+      <ul>
+        {tries.map((v) => (
+          <Try value={v} key={v.try + v.result} />
+        ))}
+      </ul>
+    </>
+  );
+};
 
-  render() {
-    const { value, tries, msg } = this.state;
-    return (
-      <>
-        <h4>숫자야구 게임</h4>
-        <p>숫자 4개를 맞추시오.</p>
-        <span>
-          시도 횟수 : {tries.length}, 남은 횟수 : {10 - tries.length}
-        </span>
-        <form onSubmit={this.onSubmit}>
-          <input type="text" maxLength={4} value={value} onChange={this.onChange} />
-          <button>정답 확인</button>
-        </form>
-        <div>{msg}</div>
-        <ul>
-          {tries.map((v) => (
-            <Try value={v} key={v.try + v.result} />
-          ))}
-        </ul>
-      </>
-    );
-  }
-}
-
-module.exports = NumberBaseballGame;
+export default NumberBaseballGame;

@@ -1,5 +1,6 @@
 const React = require("react");
 const { Component } = React;
+const Try = require("./Try");
 
 function getNumbers() {
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -71,7 +72,7 @@ class NumberBaseballGame extends Component {
   };
 
   render() {
-    const { answer, value, tries, msg } = this.state;
+    const { value, tries, msg } = this.state;
     return (
       <>
         <h4>숫자야구 게임</h4>
@@ -86,11 +87,7 @@ class NumberBaseballGame extends Component {
         <div>{msg}</div>
         <ul>
           {tries.map((v) => (
-            <li>
-              <span>
-                입력한 숫자 : {v.try}, <span>{v.result}</span>
-              </span>
-            </li>
+            <Try value={v} key={v.try + v.result} />
           ))}
         </ul>
       </>

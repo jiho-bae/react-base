@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Try from "./Try";
 
 function getNumbers() {
@@ -16,12 +16,14 @@ const NumberBaseballGame = () => {
   const [value, setValue] = useState("");
   const [tries, setTries] = useState([]);
   const [msg, setMsg] = useState("");
+  const inputEl = useRef(null);
 
   const onSubmit = (e) => {
     e.preventDefault();
     if (value.length < 4) {
       setValue("");
       setMsg("숫자 4개를 입력하세요");
+      inputEl.current.focus();
       return;
     }
     if (value === answer.join("")) {
@@ -30,6 +32,7 @@ const NumberBaseballGame = () => {
       setTries([]);
       setValue("");
       setMsg("");
+      inputEl.current.focus();
       return;
     }
     if (tries.length >= 9) {
@@ -38,6 +41,7 @@ const NumberBaseballGame = () => {
       setTries([]);
       setValue("");
       setMsg("");
+      inputEl.current.focus();
     } else {
       const answerArray = value.split("").map(Number);
       let strike = 0,
@@ -52,6 +56,7 @@ const NumberBaseballGame = () => {
       setTries([...tries, { try: value, result: `맞춘 갯수 : ${strike + ball}개, ${strike} 스트라이크, ${ball} 볼` }]);
       setValue("");
       setMsg("다시 시도하세요!");
+      inputEl.current.focus();
     }
   };
 
@@ -64,7 +69,7 @@ const NumberBaseballGame = () => {
         시도 횟수 : {tries.length}, 남은 횟수 : {10 - tries.length}
       </span>
       <form onSubmit={onSubmit}>
-        <input type="text" maxLength={4} value={value} onChange={onChange} />
+        <input type="text" ref={inputEl} maxLength={4} value={value} onChange={onChange} />
         <button>정답 확인</button>
       </form>
       <div>{msg}</div>

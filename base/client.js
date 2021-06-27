@@ -1,6 +1,6 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
 
-const WordChainGame = require("./WordChainGame");
+const NumberBaseballGame = require("./NumberBaseballGame");
 
-ReactDOM.render(<WordChainGame />, document.querySelector("#root"));
+ReactDOM.render(<NumberBaseballGame />, document.querySelector("#root"));

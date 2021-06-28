@@ -1,0 +1,25 @@
+body {
+  display: flex;
+  justify-content: center;
+}
+#screen {
+  width: 300px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  border-radius: 10px;
+}
+
+#screen.blue {
+  background-color: deepskyblue;
+}
+
+#screen.red {
+  background-color: tomato;
+}
+
+#screen.green {
+  background-color: aquamarine;
+}

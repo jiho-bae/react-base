@@ -51,7 +51,7 @@ class RSP extends Component {
     clearInterval(this.interval);
   }
 
-  onClickBtn = (pick) => {
+  onClickBtn = (pick) => () => {
     if (!this.interval) return;
     clearInterval(this.interval);
     this.interval = 0;
@@ -90,13 +90,13 @@ class RSP extends Component {
         ></div>
         <div>
           <br />
-          <button id="scissors" className="btn" onClick={() => this.onClickBtn("scissors")}>
+          <button id="scissors" className="btn" onClick={this.onClickBtn("scissors")}>
             가위
           </button>
-          <button id="rock" className="btn" onClick={() => this.onClickBtn("rock")}>
+          <button id="rock" className="btn" onClick={this.onClickBtn("rock")}>
             바위
           </button>
-          <button id="paper" className="btn" onClick={() => this.onClickBtn("paper")}>
+          <button id="paper" className="btn" onClick={this.onClickBtn("paper")}>
             보
           </button>
         </div>

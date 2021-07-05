@@ -1,9 +1,11 @@
-#computer {
-  width: 142px;
-  height: 200px;
-  background-position: 0 0;
-}
-button {
-  width: 50px;
-  height: 30px;
+.ball {
+  display: inline-block;
+  border: 1px solid balck;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+  text-align: center;
+  margin-right: 20px;
 }

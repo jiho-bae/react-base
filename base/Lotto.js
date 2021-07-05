@@ -18,11 +18,54 @@ class Lotto extends Component {
     numbers: getNumbers(),
     balls: [],
     bonus: null,
-    redo: false,
+    reDo: false,
+  };
+  timeouts = [];
+
+  getLottoNumbers = () => {
+    const { numbers } = this.state;
+    const len = numbers.length;
+    for (let i = 0; i < len - 1; i++) {
+      this.timeouts[i] = setTimeout(() => {
+        this.setState((prevState) => {
+          return { balls: [...prevState.balls, numbers[i]] };
+        });
+      }, (i + 1) * 1000);
+    }
+    this.timeouts[len - 1] = setTimeout(() => {
+      this.setState({
+        bonus: numbers[len - 1],
+        reDo: true,
+      });
+    }, len * 1000);
   };
 
+  componentDidMount() {
+    this.getLottoNumbers();
+  }
+
+  componentWillUnmount() {
+    this.timeouts.forEach((timeout) => clearTimeout(timeout));
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log("update!");
+    if (!this.state.balls.length) {
+      this.getLottoNumbers();
+    }
+  }
+
+  onClickReDo = () => {
+    this.setState({
+      numbers: getNumbers(),
+      balls: [],
+      bonus: null,
+      reDo: false,
+    });
+    this.timeouts = [];
+  };
   render() {
-    const { balls, bonus, redo } = this.state;
+    const { balls, bonus, reDo } = this.state;
 
     return (
       <>
@@ -36,7 +79,9 @@ class Lotto extends Component {
         <br />
         <div>보너스 숫자</div>
         {bonus && <Ball number={bonus} />}
-        <button onClick={redo ? this.onClickRedo : () => {}}>한번 더</button>
+        <br />
+        <br />
+        {reDo && <button onClick={this.onClickReDo}>한번 더</button>}
       </>
     );
   }

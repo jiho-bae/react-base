@@ -54,6 +54,7 @@ const reducer = (state, action) => {
       return state;
   }
 };
+
 const TicTacToe = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { tableData, turn, recentCell } = state;
@@ -61,7 +62,6 @@ const TicTacToe = () => {
   const onClickTable = useCallback(() => {}, []);
 
   useEffect(() => {
-    console.log("??");
     const [row, col] = recentCell;
     if (row < 0) return;
     let win = false;

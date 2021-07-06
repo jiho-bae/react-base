@@ -5,7 +5,6 @@ module.exports = {
   mode: "development", // or production
   devtool: "eval",
   entry: "./client.js",
-
   module: {
     rules: [
       {

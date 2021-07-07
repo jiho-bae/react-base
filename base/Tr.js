@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { TableContext } from "./MineSweeper";
 import Td from "./Td";
 
-const Tr = () => {
+const Tr = ({ rowIdx }) => {
+  const { tableData } = useContext(TableContext);
+
   return (
     <tr>
-      <Td />
+      {tableData[rowIdx] &&
+        Array(tableData[rowIdx].length)
+          .fill()
+          .map((td, idx) => <Td key={idx} rowIdx={rowIdx} colIdx={idx} />)}
     </tr>
   );
 };

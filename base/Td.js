@@ -28,7 +28,7 @@ const getTdStyle = (code) => {
       };
     default:
       return {
-        background: "grey",
+        background: "white",
       };
   }
 };
@@ -48,7 +48,7 @@ const getTdText = (code) => {
     case CODE.QUESTION_MINE:
       return "？";
     default:
-      return "";
+      return code || "";
   }
 };
 

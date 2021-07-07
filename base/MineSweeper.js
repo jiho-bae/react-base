@@ -81,7 +81,18 @@ const reducer = (state, action) => {
     case CLICK_NORMAL: {
       const tableData = [...state.tableData];
       tableData[action.row] = [...state.tableData[action.row]];
-      tableData[action.row][action.col] = CODE.OPENED;
+      let around = [];
+      const [dx, dy] = [
+        [-1, -1, -1, 0, 1, 1, 1, 0],
+        [-1, 0, 1, 1, 1, 0, -1, -1],
+      ];
+      for (let i = 0; i < 8; i++) {
+        const [nx, ny] = [action.row + dx[i], action.col + dy[i]];
+        if (nx < 0 || nx >= tableData.length) continue;
+        around.push(tableData[nx][ny]);
+      }
+      const cntMine = around.filter((v) => [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)).length;
+      tableData[action.row][action.col] = cntMine;
       return {
         ...state,
         tableData,

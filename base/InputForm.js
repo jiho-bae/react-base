@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useContext } from "react";
-import { TableContext } from "./MineSweeper";
-import Table from "./Table";
+import { START_GAME, TableContext } from "./MineSweeper";
 
 const InputForm = () => {
   const [row, setRow] = useState("");
@@ -9,7 +8,6 @@ const InputForm = () => {
   const { dispatch } = useContext(TableContext);
 
   const onChangeRow = useCallback((event) => {
-    console.log(event.target.value);
     setRow(event.target.value);
   }, []);
   const onChangeCol = useCallback((event) => {
@@ -19,7 +17,15 @@ const InputForm = () => {
     setMine(event.target.value);
   }, []);
 
-  const onClickBtn = useCallback(() => {}, []);
+  const onClickBtn = useCallback(
+    (event) => {
+      dispatch({ type: START_GAME, row, col, mine });
+      setRow("");
+      setCol("");
+      setMine("");
+    },
+    [row, col, mine]
+  );
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React from "react";
 
 const Td = () => {
-  return <td onClick={onClickTd}>{cellData}</td>;
+  return <td></td>;
 };
 
 export default Td;

@@ -1,4 +1,4 @@
-import React, { useReducer, useMemo, createContext } from "react";
+import React, { useReducer, useMemo, createContext, useEffect } from "react";
 import InputForm from "./InputForm";
 import Table from "./Table";
 
@@ -9,6 +9,8 @@ export const CLICK_MINE = "CLICK_MINE";
 export const FLAG_CELL = "FLAG_CELL";
 export const QUESTION_CELL = "QUESTION_CELL";
 export const NORMALIZE_CELL = "NORMALIZE_CELL";
+
+export const INCREMET_TIME = "INCREMET_TIME";
 
 export const CODE = {
   MINE: -7,
@@ -60,14 +62,14 @@ const initialState = {
   timer: 0,
   openedCellCnt: 0,
   result: "",
-  halted: false,
+  halted: true,
   msg: "",
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case START_GAME: {
-      if (action.row < 1 || action.col < 1)
+      if (action.row < 1 || action.col < 1 || +action.mine === 0)
         return {
           ...state,
           msg: "올바른 가로, 세로 크기를 입력하세요.",
@@ -85,7 +87,9 @@ const reducer = (state, action) => {
           col: action.col,
           mine: action.mine,
         },
+        timer: 0,
         openedCellCnt: 0,
+        result: "",
         halted: false,
         msg: `${action.row} x ${action.col} 크기 테이블이 생성되었습니다.`,
       };
@@ -126,18 +130,16 @@ const reducer = (state, action) => {
             if (nx < 0 || nx >= tableData.length) continue;
             near.push([nx, ny]);
           }
-          near
-            .filter((v) => !!v)
-            .forEach(([x, y]) => {
-              if (tableData[x][y] < CODE.OPENED) checkAround(x, y);
-            });
+          near.forEach(([x, y]) => {
+            if (tableData[x][y] < CODE.OPENED) checkAround(x, y);
+          });
         }
       };
       checkAround(action.row, action.col);
       if (state.tableInfo.row * state.tableInfo.col - state.tableInfo.mine === state.openedCellCnt + openCnt) {
         // win
         halted = true;
-        result = "승리하였습니다.";
+        result = `승리하였습니다. 총 소요 시간 : ${state.timer}초`;
       }
       return {
         ...state,
@@ -197,6 +199,12 @@ const reducer = (state, action) => {
         tableData,
       };
     }
+    case INCREMET_TIME: {
+      return {
+        ...state,
+        timer: state.timer + 1,
+      };
+    }
     default:
       return state;
   }
@@ -208,13 +216,23 @@ const MineSweeper = () => {
     () => ({ tableData: state.tableData, halted: state.halted, dispatch }),
     [state.tableData, state.halted]
   );
-
+  useEffect(() => {
+    let timer;
+    if (!state.halted) {
+      timer = setInterval(() => {
+        dispatch({ type: INCREMET_TIME });
+      }, 1000);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [state.halted]);
   return (
     <TableContext.Provider value={value}>
       <h4>지뢰찾기</h4>
+      <div>경과 시간(초) : {state.timer}</div>
       <InputForm />
       {state.msg && <div>{state.msg}</div>}
-      <div>{state.timer}</div>
       <Table />
       <div>{state.result}</div>
     </TableContext.Provider>

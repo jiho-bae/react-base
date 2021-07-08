@@ -80,19 +80,42 @@ const reducer = (state, action) => {
     }
     case CLICK_NORMAL: {
       const tableData = [...state.tableData];
-      tableData[action.row] = [...state.tableData[action.row]];
-      let around = [];
-      const [dx, dy] = [
-        [-1, -1, -1, 0, 1, 1, 1, 0],
-        [-1, 0, 1, 1, 1, 0, -1, -1],
-      ];
-      for (let i = 0; i < 8; i++) {
-        const [nx, ny] = [action.row + dx[i], action.col + dy[i]];
-        if (nx < 0 || nx >= tableData.length) continue;
-        around.push(tableData[nx][ny]);
-      }
-      const cntMine = around.filter((v) => [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)).length;
-      tableData[action.row][action.col] = cntMine;
+      tableData.forEach((row, idx) => {
+        tableData[idx] = [...state.tableData[idx]];
+      });
+      const checked = [];
+      const checkAround = (row, col) => {
+        if ([CODE.OPENED, CODE.FLAG_MINE, CODE.FLAG, CODE.QUESTION_MINE, CODE.QUESTION].includes(tableData[row][col]))
+          return;
+        if (row < 0 || row >= tableData.length || col < 0 || col >= tableData[0].length) return;
+        if (checked.includes(`${row},${col}`)) return;
+        else checked.push(`${row},${col}`);
+        let around = [];
+        const [dx, dy] = [
+          [-1, -1, -1, 0, 1, 1, 1, 0],
+          [-1, 0, 1, 1, 1, 0, -1, -1],
+        ];
+        for (let i = 0; i < 8; i++) {
+          const [nx, ny] = [row + dx[i], col + dy[i]];
+          if (nx < 0 || nx >= tableData.length) continue;
+          around.push(tableData[nx][ny]);
+        }
+        const cntMine = around.filter((v) => [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)).length;
+        tableData[row][col] = cntMine;
+        if (cntMine === 0) {
+          const near = [];
+          for (let i = 0; i < 8; i++) {
+            const [nx, ny] = [row + dx[i], col + dy[i]];
+            if (nx < 0 || nx >= tableData.length) continue;
+            near.push([nx, ny]);
+          }
+          near.forEach(([x, y]) => {
+            if (tableData[x][y] !== CODE.OPENED) checkAround(x, y);
+          });
+        } else {
+        }
+      };
+      checkAround(action.row, action.col);
       return {
         ...state,
         tableData,

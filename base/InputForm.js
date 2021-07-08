@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, memo } from "react";
 import { START_GAME, TableContext } from "./MineSweeper";
 
-const InputForm = () => {
+const InputForm = memo(() => {
   const [row, setRow] = useState("");
   const [col, setCol] = useState("");
   const [mine, setMine] = useState("");
@@ -35,6 +35,6 @@ const InputForm = () => {
       <button onClick={onClickBtn}>시작하기</button>
     </>
   );
-};
+});
 
 export default InputForm;

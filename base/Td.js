@@ -1,7 +1,8 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useMemo, memo } from "react";
 import { CODE, CLICK_MINE, CLICK_NORMAL, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL, TableContext } from "./MineSweeper";
 
 const getTdStyle = (code) => {
+  console.log("getTdText");
   switch (code) {
     case CODE.NORMAL:
     case CODE.MINE:
@@ -52,9 +53,9 @@ const getTdText = (code) => {
   }
 };
 
-const Td = ({ rowIdx, colIdx }) => {
+const Td = memo(({ rowIdx, colIdx }) => {
   const { tableData, halted, dispatch } = useContext(TableContext);
-
+  console.log("td rendered");
   const onClickTd = useCallback(() => {
     if (halted) return;
     switch (tableData[rowIdx][colIdx]) {
@@ -97,11 +98,14 @@ const Td = ({ rowIdx, colIdx }) => {
     [tableData[rowIdx][colIdx], halted]
   );
 
-  return (
-    <td style={getTdStyle(tableData[rowIdx][colIdx])} onClick={onClickTd} onContextMenu={onRightClickTd}>
-      {getTdText(tableData[rowIdx][colIdx])}
-    </td>
+  return useMemo(
+    () => (
+      <td style={getTdStyle(tableData[rowIdx][colIdx])} onClick={onClickTd} onContextMenu={onRightClickTd}>
+        {getTdText(tableData[rowIdx][colIdx])}
+      </td>
+    ),
+    [tableData[rowIdx][colIdx]]
   );
-};
+});
 
 export default Td;

@@ -52,7 +52,13 @@ const plantMine = (row, col, mine) => {
 
 const initialState = {
   tableData: [],
+  tableInfo: {
+    row: 0,
+    col: 0,
+    mine: 0,
+  },
   timer: 0,
+  openedCellCnt: 0,
   result: "",
   halted: false,
   msg: "",
@@ -74,6 +80,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         tableData: plantMine(action.row, action.col, action.mine),
+        tableInfo: {
+          row: action.row,
+          col: action.col,
+          mine: action.mine,
+        },
+        openedCellCnt: 0,
         halted: false,
         msg: `${action.row} x ${action.col} 크기 테이블이 생성되었습니다.`,
       };
@@ -83,7 +95,11 @@ const reducer = (state, action) => {
       tableData.forEach((row, idx) => {
         tableData[idx] = [...state.tableData[idx]];
       });
+      let halted = false;
+      let result = "";
+      let openCnt = 0;
       const checked = [];
+
       const checkAround = (row, col) => {
         if ([CODE.OPENED, CODE.FLAG_MINE, CODE.FLAG, CODE.QUESTION_MINE, CODE.QUESTION].includes(tableData[row][col]))
           return;
@@ -95,6 +111,7 @@ const reducer = (state, action) => {
           [-1, -1, -1, 0, 1, 1, 1, 0],
           [-1, 0, 1, 1, 1, 0, -1, -1],
         ];
+        openCnt++;
         for (let i = 0; i < 8; i++) {
           const [nx, ny] = [row + dx[i], col + dy[i]];
           if (nx < 0 || nx >= tableData.length) continue;
@@ -109,16 +126,25 @@ const reducer = (state, action) => {
             if (nx < 0 || nx >= tableData.length) continue;
             near.push([nx, ny]);
           }
-          near.forEach(([x, y]) => {
-            if (tableData[x][y] !== CODE.OPENED) checkAround(x, y);
-          });
-        } else {
+          near
+            .filter((v) => !!v)
+            .forEach(([x, y]) => {
+              if (tableData[x][y] < CODE.OPENED) checkAround(x, y);
+            });
         }
       };
       checkAround(action.row, action.col);
+      if (state.tableInfo.row * state.tableInfo.col - state.tableInfo.mine === state.openedCellCnt + openCnt) {
+        // win
+        halted = true;
+        result = "승리하였습니다.";
+      }
       return {
         ...state,
         tableData,
+        openedCellCnt: state.openedCellCnt + openCnt,
+        halted,
+        result,
       };
     }
     case CLICK_MINE: {
@@ -129,7 +155,7 @@ const reducer = (state, action) => {
         ...state,
         tableData,
         halted: true,
-        msg: `펑!`,
+        result: `펑💣!`,
       };
     }
     case FLAG_CELL: {

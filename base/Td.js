@@ -1,5 +1,13 @@
 import React, { useCallback, useContext, useMemo, memo } from "react";
-import { CODE, CLICK_MINE, CLICK_NORMAL, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL, TableContext } from "./MineSweeper";
+import {
+  CODE,
+  CLICK_MINE,
+  CLICK_NORMAL,
+  CHANGE_FLAG_TO_QUESTION,
+  CHANGE_QUESTION_TO_NORMAL,
+  CHANGE_NORMAL_TO_FLAG,
+  TableContext,
+} from "./MineSweeper";
 
 const getTdStyle = (code) => {
   switch (code) {
@@ -51,11 +59,13 @@ const getTdText = (code) => {
   }
 };
 
-const Td = memo(({ rowIdx, colIdx }) => {
+const Td = memo(({ rowIndex: row, colIndex: col }) => {
   const { tableData, halted, dispatch } = useContext(TableContext);
+  const tdData = tableData[row][col];
+
   const onClickTd = useCallback(() => {
     if (halted) return;
-    switch (tableData[rowIdx][colIdx]) {
+    switch (tdData) {
       case CODE.OPENED:
       case CODE.QUESTION_MINE:
       case CODE.QUESTION:
@@ -63,45 +73,45 @@ const Td = memo(({ rowIdx, colIdx }) => {
       case CODE.FLAG_MINE:
         return;
       case CODE.NORMAL:
-        dispatch({ type: CLICK_NORMAL, row: rowIdx, col: colIdx });
+        dispatch({ type: CLICK_NORMAL, row, col });
         return;
       case CODE.MINE:
-        dispatch({ type: CLICK_MINE, row: rowIdx, col: colIdx });
+        dispatch({ type: CLICK_MINE, row, col });
         return;
     }
-  }, [tableData[rowIdx][colIdx], halted]);
+  }, [tdData, halted]);
 
   const onRightClickTd = useCallback(
     (event) => {
       event.preventDefault();
       if (halted) return;
-      switch (tableData[rowIdx][colIdx]) {
+      switch (tdData) {
         case CODE.NORMAL:
         case CODE.MINE:
-          dispatch({ type: FLAG_CELL, row: rowIdx, col: colIdx });
+          dispatch({ type: CHANGE_FLAG_TO_QUESTION, row, col });
           return;
         case CODE.FLAG:
         case CODE.FLAG_MINE:
-          dispatch({ type: QUESTION_CELL, row: rowIdx, col: colIdx });
+          dispatch({ type: CHANGE_NORMAL_TO_FLAG, row, col });
           return;
         case CODE.QUESTION:
         case CODE.QUESTION_MINE:
-          dispatch({ type: NORMALIZE_CELL, row: rowIdx, col: colIdx });
+          dispatch({ type: CHANGE_QUESTION_TO_NORMAL, row, col });
           return;
         case CODE.OPENED:
           return;
       }
     },
-    [tableData[rowIdx][colIdx], halted]
+    [tdData, halted]
   );
 
   return useMemo(
     () => (
-      <td style={getTdStyle(tableData[rowIdx][colIdx])} onClick={onClickTd} onContextMenu={onRightClickTd}>
-        {getTdText(tableData[rowIdx][colIdx])}
+      <td style={getTdStyle(tdData)} onClick={onClickTd} onContextMenu={onRightClickTd}>
+        {getTdText(tdData)}
       </td>
     ),
-    [tableData[rowIdx][colIdx], halted]
+    [tdData, halted]
   );
 });
 

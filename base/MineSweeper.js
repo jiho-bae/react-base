@@ -6,9 +6,9 @@ export const START_GAME = "START_GAME";
 export const CLICK_NORMAL = "CLICK_NORMAL";
 export const CLICK_MINE = "CLICK_MINE";
 
-export const FLAG_CELL = "FLAG_CELL";
-export const QUESTION_CELL = "QUESTION_CELL";
-export const NORMALIZE_CELL = "NORMALIZE_CELL";
+export const CHANGE_NORMAL_TO_FLAG = "CHANGE_NORMAL_TO_FLAG";
+export const CHANGE_FLAG_TO_QUESTION = "CHANGE_FLAG_TO_QUESTION";
+export const CHANGE_QUESTION_TO_NORMAL = "CHANGE_QUESTION_TO_NORMAL";
 
 export const INCREMET_TIME = "INCREMET_TIME";
 
@@ -64,11 +64,30 @@ const initialState = {
   result: "",
   halted: true,
   msg: "",
+  displayForm: true,
+  displayRestartBtn: false,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case START_GAME: {
+      if (action.restart) {
+        return {
+          tableData: [],
+          tableInfo: {
+            row: 0,
+            col: 0,
+            mine: 0,
+          },
+          timer: 0,
+          openedCellCnt: 0,
+          result: "",
+          halted: true,
+          msg: "",
+          displayForm: true,
+          displayRestartBtn: false,
+        };
+      }
       if (action.row < 1 || action.col < 1 || +action.mine === 0)
         return {
           ...state,
@@ -92,6 +111,7 @@ const reducer = (state, action) => {
         result: "",
         halted: false,
         msg: `${action.row} x ${action.col} 크기 테이블이 생성되었습니다. 지뢰 ${action.mine}개를 찾으세요.`,
+        displayForm: false,
       };
     }
     case CLICK_NORMAL: {
@@ -102,6 +122,7 @@ const reducer = (state, action) => {
       let halted = false;
       let result = "";
       let openCnt = 0;
+      let displayRestartBtn = false;
       const checked = [];
 
       const checkAround = (row, col) => {
@@ -139,6 +160,7 @@ const reducer = (state, action) => {
       if (state.tableInfo.row * state.tableInfo.col - state.tableInfo.mine === state.openedCellCnt + openCnt) {
         // win
         halted = true;
+        displayRestartBtn = true;
         result = `승리하였습니다. 총 소요 시간 : ${state.timer}초`;
       }
       return {
@@ -147,6 +169,7 @@ const reducer = (state, action) => {
         openedCellCnt: state.openedCellCnt + openCnt,
         halted,
         result,
+        displayRestartBtn,
       };
     }
     case CLICK_MINE: {
@@ -157,10 +180,11 @@ const reducer = (state, action) => {
         ...state,
         tableData,
         halted: true,
+        displayRestartBtn: true,
         result: `펑💣!`,
       };
     }
-    case FLAG_CELL: {
+    case CHANGE_NORMAL_TO_FLAG: {
       const tableData = [...state.tableData];
       tableData[action.row] = [...state.tableData[action.row]];
       if (tableData[action.row][action.col] === CODE.MINE) {
@@ -173,7 +197,7 @@ const reducer = (state, action) => {
         tableData,
       };
     }
-    case QUESTION_CELL: {
+    case CHANGE_FLAG_TO_QUESTION: {
       const tableData = [...state.tableData];
       tableData[action.row] = [...state.tableData[action.row]];
       if (tableData[action.row][action.col] === CODE.FLAG_MINE) {
@@ -186,7 +210,7 @@ const reducer = (state, action) => {
         tableData,
       };
     }
-    case NORMALIZE_CELL: {
+    case CHANGE_QUESTION_TO_NORMAL: {
       const tableData = [...state.tableData];
       tableData[action.row] = [...state.tableData[action.row]];
       if (tableData[action.row][action.col] === CODE.QUESTION_MINE) {
@@ -212,13 +236,11 @@ const reducer = (state, action) => {
 
 const MineSweeper = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const value = useMemo(
-    () => ({ tableData: state.tableData, halted: state.halted, dispatch }),
-    [state.tableData, state.halted]
-  );
+  const { tableData, halted, timer, msg, result, displayForm, displayRestartBtn } = state;
+  const value = useMemo(() => ({ tableData, halted, dispatch }), [tableData, halted]);
   useEffect(() => {
     let timer;
-    if (!state.halted) {
+    if (!halted) {
       timer = setInterval(() => {
         dispatch({ type: INCREMET_TIME });
       }, 1000);
@@ -226,15 +248,21 @@ const MineSweeper = () => {
     return () => {
       clearInterval(timer);
     };
-  }, [state.halted]);
+  }, [halted]);
+
+  const onClickRestartBtn = () => {
+    dispatch({ type: START_GAME, restart: true });
+  };
+
   return (
     <TableContext.Provider value={value}>
       <h4>지뢰찾기</h4>
-      <div>경과 시간(초) : {state.timer}</div>
-      <InputForm />
-      {state.msg && <div>{state.msg}</div>}
+      <div>경과 시간(초) : {timer}</div>
+      {displayForm && <InputForm />}
+      {msg && <div>{msg}</div>}
       <Table />
-      <div>{state.result}</div>
+      <div>{result}</div>
+      {displayRestartBtn && <button onClick={onClickRestartBtn}>다시 시작하기</button>}
     </TableContext.Provider>
   );
 };

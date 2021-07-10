@@ -2,15 +2,15 @@ import React, { useContext, memo } from "react";
 import { TableContext } from "./MineSweeper";
 import Td from "./Td";
 
-const Tr = memo(({ rowIdx }) => {
+const Tr = memo(({ rowIndex }) => {
   const { tableData } = useContext(TableContext);
 
   return (
     <tr>
-      {tableData[rowIdx] &&
-        Array(tableData[rowIdx].length)
+      {tableData[rowIndex] &&
+        Array(tableData[rowIndex].length)
           .fill()
-          .map((td, idx) => <Td key={idx} rowIdx={rowIdx} colIdx={idx} />)}
+          .map((td, idx) => <Td key={idx} rowIndex={rowIndex} colIndex={idx} />)}
     </tr>
   );
 });

@@ -10,7 +10,7 @@ const Table = memo(() => {
         {Array(tableData.length)
           .fill()
           .map((tr, idx) => (
-            <Tr key={idx} rowIdx={idx} />
+            <Tr key={idx} rowIndex={idx} />
           ))}
       </tbody>
     </table>

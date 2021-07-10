@@ -25,7 +25,7 @@ const GuGuDan = () => {
 
   return (
     <>
-      <h4>구구단 문제(use Hooks)</h4>
+      <h4>구구단 게임</h4>
       <p>
         {first} x {second} = ?
       </p>

@@ -38,6 +38,7 @@ module.exports = {
     publicPath: "/assets/",
   },
   devServer: {
+    historyApiFallback: true,
     publicPath: "/assets/",
     hot: true,
   },

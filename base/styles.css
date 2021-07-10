@@ -1,0 +1,65 @@
+.ball {
+  display: inline-block;
+  border: 1px solid balck;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 18px;
+  text-align: center;
+  margin-right: 20px;
+  color: white;
+}
+
+nav {
+  width: 600px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#computer {
+  width: 142px;
+  height: 200px;
+  background-position: 0 0;
+}
+.btn {
+  width: 50px;
+  height: 30px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
+
+#screen {
+  width: 300px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  border-radius: 10px;
+}
+
+#screen.blue {
+  background-color: deepskyblue;
+}
+
+#screen.red {
+  background-color: tomato;
+}
+
+#screen.green {
+  background-color: aquamarine;
+}
+
+table {
+  border-collapse: collapse;
+}
+td {
+  border: 1px solid black;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+}

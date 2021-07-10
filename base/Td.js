@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useMemo, memo } from "react";
 import { CODE, CLICK_MINE, CLICK_NORMAL, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL, TableContext } from "./MineSweeper";
 
 const getTdStyle = (code) => {
-  console.log("getTdText");
   switch (code) {
     case CODE.NORMAL:
     case CODE.MINE:
@@ -37,9 +36,8 @@ const getTdStyle = (code) => {
 const getTdText = (code) => {
   switch (code) {
     case CODE.NORMAL:
-      return "";
     case CODE.MINE:
-      return "❌";
+      return "";
     case CODE.CLICKED_MINE:
       return "💣";
     case CODE.FLAG:
@@ -55,7 +53,6 @@ const getTdText = (code) => {
 
 const Td = memo(({ rowIdx, colIdx }) => {
   const { tableData, halted, dispatch } = useContext(TableContext);
-  console.log("td rendered");
   const onClickTd = useCallback(() => {
     if (halted) return;
     switch (tableData[rowIdx][colIdx]) {
@@ -104,7 +101,7 @@ const Td = memo(({ rowIdx, colIdx }) => {
         {getTdText(tableData[rowIdx][colIdx])}
       </td>
     ),
-    [tableData[rowIdx][colIdx]]
+    [tableData[rowIdx][colIdx], halted]
   );
 });
 

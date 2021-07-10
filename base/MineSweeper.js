@@ -91,7 +91,7 @@ const reducer = (state, action) => {
         openedCellCnt: 0,
         result: "",
         halted: false,
-        msg: `${action.row} x ${action.col} 크기 테이블이 생성되었습니다.`,
+        msg: `${action.row} x ${action.col} 크기 테이블이 생성되었습니다. 지뢰 ${action.mine}개를 찾으세요.`,
       };
     }
     case CLICK_NORMAL: {

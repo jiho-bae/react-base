@@ -1,13 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import GuGuDan from "./Routes/GuGuDan/GuGudan";
-import LottoRecommender from "./Routes/LottoRecommender/Lotto";
-import NumberBaseball from "./Routes/NumberBaseball/NumberBaseballGame";
-import RSP from "./Routes/RSP/RSP";
-import WordChainGame from "./Routes/WordChainGame/WordChainGame";
-import ReactionSpeed from "./Routes/ReactionSpeed/ReactionSpeed";
-import MineSweeper from "./Routes/MineSweeper/MineSweeper";
-import TicTacToe from "./Routes/TicTacToe/TicTacToe";
+import GameSelector from "./GameSelector";
 
 const Games = () => {
   return (
@@ -24,14 +17,7 @@ const Games = () => {
         <Link to="/tictactoe">틱택토</Link>
       </nav>
       <div>
-        <Route path="/rsp" component={RSP}></Route>
-        <Route path="/word-chain-game" component={WordChainGame}></Route>
-        <Route path="/gugudan" component={GuGuDan}></Route>
-        <Route path="/lotto-recommender" component={LottoRecommender}></Route>
-        <Route path="/reaction-speed" component={ReactionSpeed}></Route>
-        <Route path="/number-baseball" component={NumberBaseball}></Route>
-        <Route path="/mine-sweeper" component={MineSweeper}></Route>
-        <Route path="/tictactoe" component={TicTacToe}></Route>
+        <Route path="/:name" component={GameSelector}></Route>
       </div>
     </BrowserRouter>
   );

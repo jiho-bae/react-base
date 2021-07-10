@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import NumberBaseball from "../숫자야구/NumberBaseballGame";
-import Gugudan from "../구구단/webpack/GuGuDan";
-import LottoRecommender from "../로또번호추첨/Lotto";
+import GuGuDan from "./Routes/GuGuDan/GuGudan";
+import LottoRecommender from "./Routes/LottoRecommender/Lotto";
+import NumberBaseball from "./Routes/NumberBaseball/NumberBaseballGame";
 
 const Games = () => {
   return (
@@ -13,7 +13,7 @@ const Games = () => {
         <Link to="/number-baseball">숫자 야구</Link>
       </div>
       <div>
-        <Route path="/gugudan" component={Gugudan}></Route>
+        <Route path="/gugudan" component={GuGuDan}></Route>
         <Route path="/lotto-recommender" component={LottoRecommender}></Route>
         <Route path="/number-baseball" component={NumberBaseball}></Route>
       </div>

@@ -19,9 +19,10 @@ const ReactionSpeed = () => {
         startTime.current = new Date();
       }, Math.floor(Math.random() * 1000) + 2000);
     } else if (colorState === "red") {
-      setColorState("green");
+      console.log("rerereere");
+      setColorState("blue");
       setMessage("다시 클릭하여 측정을 시작하세요.");
-      clearTimeout(timeout);
+      clearTimeout(timeout.current);
     } else if (colorState === "green") {
       endTime.current = new Date();
       setColorState("blue");
@@ -32,6 +33,9 @@ const ReactionSpeed = () => {
 
   const onClickReset = () => {
     setResult([]);
+    clearTimeout(timeout.current);
+    startTime.current = 0;
+    endTime.current = 0;
   };
 
   return (
